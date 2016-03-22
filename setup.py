@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
     name='SlackBotFramework',
-    version=1.0.0,
+    version="1.0.0",
     description="Slack bot framework",
     long_description="Slack bot framework",
     author='Matt Smith',
