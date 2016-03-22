@@ -119,11 +119,6 @@ class SlackBot(object):
             return wrapper
         return wrap
 
-    def register_class(self):
-        def wrap(cls):
-            self.class_handlers.append(cls)
-            def wrapper(*args, **kwargs):
-                return cls.handle(*args, **kwargs)
-            return wrapper
-        return wrap
-
+    def register_class(self, cls):
+        self.class_handlers.append(cls)
+        
