@@ -24,14 +24,15 @@ class SlackBot(object):
     last_run = time.time()
     uptime = 0
 
-    def __init__(self, client):
+    def __init__(self, client, config=None):
         self.client = client
 
-        self.config = {}
+        self.config = config or {}
         self.config.setdefault('ignore-bots', True)
+        self.config.setdefault('bot-name', "Bot")
 
     def send_card(self, channel, title, title_url, text, fields=None,
-                  bot_name="Bot", color="#36a64f", fallback="There was an error please try again"):
+                  bot_name=None, color="#36a64f", fallback="There was an error please try again"):
         attr = [{
             "fallback": fallback,
             "color": color,
@@ -49,7 +50,7 @@ class SlackBot(object):
         return self.client.api_call(
             "chat.postMessage",
             as_user=False,
-            username=bot_name,
+            username=bot_name or config.get('bot-name', 'Bot'),
             channel=channel,
             text="",
             attachments=json.dumps(attr))
@@ -68,14 +69,14 @@ class SlackBot(object):
                     cls.timer(interval)
 
     def before_handler(self, event):
-        # Some customer handler stuff
+        # Some custom handler stuff
         # we should add some configuration here to enable or disable some of these features.
         if event.user:
 
             # Ignore bots
-            if self.config['ignore-bots']:
+            if self.config.get('ignore-bots', False):
                 user = self.client.api_call('users.info', user=event.user).get('user', {})
-                if user['is_bot']:
+                if user.get('is_bot'):
                     return
 
     def handle(self, event):
